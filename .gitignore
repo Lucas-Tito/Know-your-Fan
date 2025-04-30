@@ -1,0 +1,6 @@
+# ignore conda installation file
+*.sh
+
+# ignore conda enverioment folder
+know_your_fan_env/
+
