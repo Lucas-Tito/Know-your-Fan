@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pymongo
+requests
+beautifulsoup4
+boto3
+tweepy
+instagram-private-api
+twitchAPI
+pydantic
