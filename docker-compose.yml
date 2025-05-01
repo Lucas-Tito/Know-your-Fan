@@ -7,6 +7,9 @@ services:
       - mongodb
     environment:
       - MONGODB_URI=mongodb://mongodb:27017/
+    # aws keys
+    env_file:
+      - .env
     volumes:
       - ./backend:/app
 
