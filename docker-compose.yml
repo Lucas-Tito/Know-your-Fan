@@ -7,11 +7,15 @@ services:
       - mongodb
     environment:
       - MONGODB_URI=mongodb://mongodb:27017/
-    # aws keys
     env_file:
       - .env
     volumes:
-      - ./backend:/app
+      - ./backend/app.py:/app/app.py
+      - ./backend/database.py:/app/database.py
+      - ./backend/document_validation.py:/app/document_validation.py
+      - ./backend/esports_profile_validation.py:/app/esports_profile_validation.py
+      - ./backend/social_media_integration.py:/app/social_media_integration.py
+      # Não monta o requirements.txt ou o Dockerfile
 
   mongodb:
     image: mongo:latest

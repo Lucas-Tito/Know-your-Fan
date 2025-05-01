@@ -1,10 +1,10 @@
 fastapi
 uvicorn
 pymongo
-requests
-beautifulsoup4
 boto3
-tweepy
-instagram-private-api
-twitchAPI
-pydantic
+pillow
+opencv-python-headless
+pytesseract
+numpy
+python-multipart
+python-dotenv
