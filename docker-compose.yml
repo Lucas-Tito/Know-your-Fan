@@ -26,3 +26,4 @@ services:
 
 volumes:
   mongodb_data:
+  pip-cache:  # Novo volume para cache de pip
