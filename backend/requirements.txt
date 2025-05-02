@@ -8,3 +8,5 @@ pytesseract
 numpy
 python-multipart
 python-dotenv
+requests
+beautifulsoup4
