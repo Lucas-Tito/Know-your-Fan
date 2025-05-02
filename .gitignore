@@ -4,3 +4,8 @@
 # ignore conda enverioment folder
 know_your_fan_env/
 
+#ignore backend cache files
+backend/__pycache__/
+
+# ignore enverioment files
+.env
