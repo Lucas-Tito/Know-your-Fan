@@ -328,14 +328,35 @@ async def get_user_esports_profiles(user_id: str):
 
 # Rota para validar perfil sem associar a um usuário
 @app.post("/validate-esports-profile")
-async def validate_esports_profile(profile: EsportsProfileLink):
+async def validate_esports_profile(
+    profile: EsportsProfileLink,
+    user_id: Optional[str] = None
+):
     """
-    Valida um perfil de e-sports sem associá-lo a um usuário
+    Valida um perfil de e-sports com análise de IA
     """
     validation_result = esports_validator.validate_profile_url(str(profile.profile_url))
 
+    if not validation_result.get("valid", False):
+        return {
+            "valid": False,
+            "error": validation_result.get("error", "Perfil inválido")
+        }
+
+    # Obter interesses do usuário se disponível
+    user_interests = []
+    if user_id:
+        user = db.get_user_data(user_id)
+        user_interests = user.get("interests", [])
+
+    # Análise de relevância com IA
+    relevance = await esports_validator.analyze_profile_relevance(
+        validation_result,
+        user_interests
+    )
+
     return {
-        "valid": validation_result.get("valid", False),
-        "profile_data": validation_result if validation_result.get("valid", False) else None,
-        "error": validation_result.get("error") if not validation_result.get("valid", False) else None
+        "valid": True,
+        "profile_data": validation_result,
+        "relevance_analysis": relevance
     }
