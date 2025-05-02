@@ -2,8 +2,7 @@ import requests
 import os
 from dotenv import load_dotenv
 import json
-import re
-from bs4 import BeautifulSoup
+from datetime import datetime
 
 # Carregar variáveis do arquivo .env
 load_dotenv()
@@ -25,7 +24,7 @@ class SocialMediaIntegration:
 
         Args:
             user_id: ID do usuário no sistema
-            platform: Plataforma (twitch, facebook, bluesky)
+            platform: Plataforma (bluesky)
             username: Nome de usuário na plataforma
             credentials: Credenciais para plataformas que exigem (como BlueSky)
 
@@ -33,11 +32,7 @@ class SocialMediaIntegration:
             dict: Status da vinculação e dados básicos do perfil
         """
         try:
-            if platform == "twitch":
-                profile_data = self.get_twitch_public_data(username)
-            elif platform == "facebook":
-                profile_data = self.get_facebook_public_data(username)
-            elif platform == "bluesky":
+            if platform == "bluesky":
                 if not credentials or 'identifier' not in credentials or 'password' not in credentials:
                     return {"status": "error", "message": "Credenciais necessárias para BlueSky"}
                 auth_result = self.bluesky_login(credentials['identifier'], credentials['password'])
@@ -48,7 +43,7 @@ class SocialMediaIntegration:
                 profile_data["refresh_jwt"] = auth_result["refresh_jwt"]
                 profile_data["did"] = auth_result["user_info"]["did"]
             else:
-                return {"status": "error", "message": "Plataforma não suportada"}
+                return {"status": "error", "message": "Plataforma não suportada. Apenas Bluesky está disponível."}
 
             if "error" in profile_data:
                 return {"status": "error", "message": profile_data["error"]}
@@ -64,90 +59,6 @@ class SocialMediaIntegration:
 
         except Exception as e:
             return {"status": "error", "message": str(e)}
-
-    def get_twitch_public_data(self, username):
-        """
-        Obtém dados públicos de um usuário do Twitch
-        """
-        try:
-            # Usar a API pública do Twitch (requer Client-ID mas não OAuth)
-            headers = {
-                "Client-ID": os.getenv("TWITCH_CLIENT_ID"),
-                "Accept": "application/vnd.twitchtv.v5+json"
-            }
-
-            # Obter ID do usuário
-            user_url = f"https://api.twitch.tv/helix/users?login={username}"
-            response = requests.get(user_url, headers=headers)
-            user_data = response.json()
-
-            if not user_data.get('data') or len(user_data['data']) == 0:
-                return {"error": "Usuário não encontrado"}
-
-            user_info = user_data['data'][0]
-            user_id = user_info['id']
-
-            # Obter informações do canal
-            channel_url = f"https://api.twitch.tv/helix/channels?broadcaster_id={user_id}"
-            channel_response = requests.get(channel_url, headers=headers)
-            channel_data = channel_response.json()
-
-            # Obter streams seguidos (não é possível sem OAuth, então usamos dados públicos)
-            # Aqui poderíamos usar web scraping como alternativa, mas isso tem limitações
-
-            return {
-                "id": user_id,
-                "username": username,
-                "display_name": user_info.get('display_name'),
-                "profile_image": user_info.get('profile_image_url'),
-                "description": user_info.get('description'),
-                "view_count": user_info.get('view_count'),
-                "broadcaster_type": user_info.get('broadcaster_type'),
-                "channel_info": channel_data.get('data', [{}])[0] if channel_data.get('data') else {}
-            }
-        except Exception as e:
-            return {"error": str(e)}
-
-    def get_facebook_public_data(self, username):
-        """
-        Obtém dados públicos de uma página do Facebook
-        Nota: Isso é limitado a páginas públicas, não perfis pessoais
-        """
-        try:
-            # Para páginas públicas, podemos usar a API Graph sem token de usuário
-            # Mas precisamos de um token de acesso do aplicativo
-            app_token_url = f"https://graph.facebook.com/oauth/access_token?client_id={os.getenv('FACEBOOK_APP_ID')}&client_secret={os.getenv('FACEBOOK_APP_SECRET')}&grant_type=client_credentials"
-            token_response = requests.get(app_token_url)
-            token_data = token_response.json()
-
-            if 'error' in token_data:
-                return {"error": token_data['error']['message']}
-
-            app_token = token_data['access_token']
-
-            # Obter dados da página
-            page_url = f"https://graph.facebook.com/v18.0/{username}?fields=id,name,category,fan_count,link&access_token={app_token}"
-            page_response = requests.get(page_url)
-            page_data = page_response.json()
-
-            if 'error' in page_data:
-                return {"error": page_data['error']['message']}
-
-            # Verificar se é uma página de e-sports
-            is_esports = False
-            if any(org in page_data.get('name', '').lower() for org in self.esports_orgs):
-                is_esports = True
-
-            return {
-                "id": page_data.get('id'),
-                "name": page_data.get('name'),
-                "category": page_data.get('category'),
-                "fan_count": page_data.get('fan_count'),
-                "link": page_data.get('link'),
-                "is_esports_related": is_esports
-            }
-        except Exception as e:
-            return {"error": str(e)}
 
     def bluesky_login(self, identifier, password):
         """
@@ -228,10 +139,74 @@ class SocialMediaIntegration:
                 "esports_posts": {
                     "count": len(esports_posts),
                     "sample": esports_posts[:5]
-                }
+                },
+                "last_updated": datetime.now().isoformat()
             }
         except Exception as e:
             return {"error": str(e)}
+
+    def refresh_bluesky_token(self, refresh_jwt):
+        """
+        Atualiza o token JWT do BlueSky
+        """
+        try:
+            refresh_url = f"{self.bluesky_server}/xrpc/com.atproto.server.refreshSession"
+            headers = {"Authorization": f"Bearer {refresh_jwt}"}
+
+            response = requests.post(refresh_url, headers=headers)
+            refresh_data = response.json()
+
+            if 'error' in refresh_data:
+                return {"status": "error", "message": refresh_data.get('error', 'Erro ao atualizar token')}
+
+            return {
+                "status": "success",
+                "access_jwt": refresh_data.get('accessJwt'),
+                "refresh_jwt": refresh_data.get('refreshJwt')
+            }
+        except Exception as e:
+            return {"status": "error", "message": str(e)}
+
+    def update_bluesky_data(self, user_id, did, access_jwt, refresh_jwt=None):
+        """
+        Atualiza os dados do usuário no BlueSky
+        """
+        try:
+            # Verificar se o token expirou e tentar atualizar
+            profile_url = f"{self.bluesky_server}/xrpc/app.bsky.actor.getProfile"
+            headers = {"Authorization": f"Bearer {access_jwt}"}
+            params = {"actor": did}
+
+            profile_response = requests.get(profile_url, headers=headers, params=params)
+
+            # Se o token expirou e temos um refresh token, tentar atualizar
+            if profile_response.status_code == 401 and refresh_jwt:
+                refresh_result = self.refresh_bluesky_token(refresh_jwt)
+                if refresh_result["status"] == "error":
+                    return refresh_result
+
+                access_jwt = refresh_result["access_jwt"]
+                refresh_jwt = refresh_result["refresh_jwt"]
+                headers = {"Authorization": f"Bearer {access_jwt}"}
+                profile_response = requests.get(profile_url, headers=headers, params=params)
+
+            if profile_response.status_code != 200:
+                return {"status": "error", "message": f"Erro ao obter perfil: {profile_response.text}"}
+
+            # Obter dados atualizados
+            updated_data = self.get_bluesky_data(access_jwt, did)
+
+            if "error" in updated_data:
+                return {"status": "error", "message": updated_data["error"]}
+
+            # Adicionar tokens atualizados
+            updated_data["access_jwt"] = access_jwt
+            updated_data["refresh_jwt"] = refresh_jwt
+            updated_data["did"] = did
+
+            return {"status": "success", "data": updated_data}
+        except Exception as e:
+            return {"status": "error", "message": str(e)}
 
     def get_user_esports_activity(self, user_id, linked_accounts):
         """
@@ -252,37 +227,7 @@ class SocialMediaIntegration:
             platform = account["platform"]
             username = account.get("username")
 
-            if platform == "twitch":
-                # Para Twitch, usamos dados públicos limitados
-                if account.get("is_esports_related", False):
-                    activity_summary["following_orgs"].append({
-                        "name": account.get("display_name", username),
-                        "platform": "twitch"
-                    })
-
-                    # Incrementar contagem de interações
-                    activity_summary["interactions"]["total"] += 1
-                    activity_summary["interactions"]["by_platform"]["twitch"] = activity_summary["interactions"]["by_platform"].get("twitch", 0) + 1
-
-            elif platform == "facebook":
-                # Para Facebook, usamos dados de páginas públicas
-                if account.get("is_esports_related", False):
-                    activity_summary["following_orgs"].append({
-                        "name": account.get("name", username),
-                        "platform": "facebook",
-                        "category": account.get("category")
-                    })
-
-                    # Incrementar contagem de interações
-                    activity_summary["interactions"]["total"] += 1
-                    activity_summary["interactions"]["by_platform"]["facebook"] = activity_summary["interactions"]["by_platform"].get("facebook", 0) + 1
-
-                    # Analisar organizações favoritas
-                    for org in self.esports_orgs:
-                        if org in account.get("name", "").lower():
-                            activity_summary["favorite_orgs"][org] = activity_summary["favorite_orgs"].get(org, 0) + 1
-
-            elif platform == "bluesky" and account.get("access_jwt") and account.get("did"):
+            if platform == "bluesky" and account.get("access_jwt") and account.get("did"):
                 # Para BlueSky, podemos usar a API completa com autenticação
                 data = self.get_bluesky_data(account["access_jwt"], account["did"])
                 if "error" not in data:
@@ -306,8 +251,8 @@ class SocialMediaIntegration:
         # Ordenar organizações favoritas
         activity_summary["favorite_orgs"] = dict(
             sorted(activity_summary["favorite_orgs"].items(),
-                   key=lambda item: item[1],
-                   reverse=True)
+                  key=lambda item: item[1],
+                  reverse=True)
         )
 
         return activity_summary
