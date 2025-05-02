@@ -8,7 +8,7 @@ Este projeto implementa uma solução completa para o desafio "Know Your Fan", p
 
 - **Coleta de dados pessoais**: Formulário para coleta de informações básicas, interesses e preferências
 - **Upload e validação de documentos**: Sistema de verificação de identidade com IA usando AWS Rekognition
-- **Conexão com redes sociais**: Análise de interações e comportamento nas redes sociais
+- **Conexão com redes sociais**: Análise de interações e comportamento nas redes sociais, incluindo integração com a API do BlueSky
 - **Validação de perfis de e-sports**: Integração com plataformas como FACEIT, GamersClub e Steam
 - **Dashboard personalizado**: Visualização completa do perfil do fã
 
@@ -19,7 +19,7 @@ Este projeto implementa uma solução completa para o desafio "Know Your Fan", p
 - MongoDB para armazenamento de dados
 - Docker e Docker Compose para containerização
 - AWS Rekognition para verificação de documentos e faces
-- Integração com APIs de redes sociais e plataformas de e-sports
+- Integração com APIs de redes sociais e plataformas de e-sports, incluindo BlueSky
 
 ### Instalação e Uso com Docker
 
