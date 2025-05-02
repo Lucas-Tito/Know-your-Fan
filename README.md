@@ -7,7 +7,7 @@ Este projeto implementa uma solução completa para o desafio "Know Your Fan", p
 ### Funcionalidades
 
 - **Coleta de dados pessoais**: Formulário para coleta de informações básicas, interesses e preferências
-- **Upload e validação de documentos**: Sistema de verificação de identidade com IA
+- **Upload e validação de documentos**: Sistema de verificação de identidade com IA usando AWS Rekognition
 - **Conexão com redes sociais**: Análise de interações e comportamento nas redes sociais
 - **Validação de perfis de e-sports**: Integração com plataformas como FACEIT, GamersClub e Steam
 - **Dashboard personalizado**: Visualização completa do perfil do fã
@@ -18,6 +18,7 @@ Este projeto implementa uma solução completa para o desafio "Know Your Fan", p
 - FastAPI para API REST
 - MongoDB para armazenamento de dados
 - Docker e Docker Compose para containerização
+- AWS Rekognition para verificação de documentos e faces
 - Integração com APIs de redes sociais e plataformas de e-sports
 
 ### Instalação e Uso com Docker
@@ -28,12 +29,30 @@ git clone https://github.com/seu-usuario/know-your-fan-furia.git
 cd know-your-fan-furia
 ```
 
-2. Inicie os contêineres com Docker Compose:
+2. Configure as credenciais AWS:
+   - Crie um arquivo `.env` na raiz do projeto com suas credenciais AWS IAM:
+   ```
+   AWS_ACCESS_KEY_ID=sua_access_key_aqui
+   AWS_SECRET_ACCESS_KEY=sua_secret_key_aqui
+   AWS_REGION=us-east-1
+   ```
+   - Certifique-se de que o usuário IAM tenha permissões para o serviço Rekognition
+
+3. Inicie os contêineres com Docker Compose:
 ```bash
 docker-compose up -d
 ```
 
-3. A aplicação estará disponível em `http://localhost:8000`
+4. A aplicação estará disponível em `http://localhost:8000`
+
+### Comandos Docker úteis
+
+Para reiniciar completamente a aplicação (reconstruindo as imagens):
+```bash
+sudo docker-compose down
+sudo docker-compose build --no-cache
+sudo docker-compose up -d
+```
 
 ### Verificando se a aplicação está rodando
 
@@ -81,3 +100,13 @@ pip install -r requirements.txt
 uvicorn app:app --reload
 ```
 
+### Verificação de RG com AWS Rekognition
+
+Este projeto utiliza o serviço AWS Rekognition para verificação de documentos de identidade (RG). O sistema:
+
+- Detecta faces no documento
+- Extrai texto usando OCR
+- Valida o formato e conteúdo do RG
+- Compara a face do documento com a selfie do usuário
+
+O Free Tier da AWS permite aproximadamente 2.500 verificações de RG por mês sem custo adicional durante os primeiros 12 meses.
