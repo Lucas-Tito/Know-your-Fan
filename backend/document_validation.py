@@ -7,6 +7,10 @@ import pytesseract
 from PIL import Image
 import io
 import os
+from dotenv import load_dotenv
+
+# Carregar variáveis do arquivo .env
+load_dotenv()
 
 #DEFINIR VARIÁVEIS DE AMBIENTE DEPOIS
 def validate_documents(document_image, selfie_image):
@@ -68,9 +72,9 @@ def validate_rg(document_image_bytes):
         # Verificar se há uma foto no documento
         # Isso requer análise de imagem mais avançada, mas podemos usar o Rekognition
         rekognition = boto3.client('rekognition',
-            aws_access_key_id='YOUR_ACCESS_KEY',
-            aws_secret_access_key='YOUR_SECRET_KEY',
-            region_name='YOUR_REGION'
+            aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+            aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
+            region_name=os.getenv('AWS_REGION')
         )
 
         face_detection = rekognition.detect_faces(
