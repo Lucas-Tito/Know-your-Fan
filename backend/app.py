@@ -1,13 +1,35 @@
-from fastapi import FastAPI, File, UploadFile, Form
+from fastapi import FastAPI, HTTPException, Request, Form, Body, File, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List
-import uvicorn
-from document_validation import validate_rg
+from typing import List, Optional, Dict
 from database import Database
+from document_validation import validate_documents, validate_rg
+from esports_profile_validation import EsportsProfileValidator
+from social_media_integration import SocialMediaIntegration
+import os
+from dotenv import load_dotenv
 
+# Carregar variáveis do arquivo .env
+load_dotenv()
+
+# Inicializar o aplicativo FastAPI
 app = FastAPI()
-db = Database()
 
+# Configurar CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Inicializar serviços
+db = Database()
+esports_validator = EsportsProfileValidator()
+social_media = SocialMediaIntegration()
+
+# Modelos de dados
 class UserData(BaseModel):
     name: str
     email: str
@@ -20,6 +42,40 @@ class UserData(BaseModel):
     events: str
     purchases: str
 
+class SocialAccount(BaseModel):
+    platform: str
+    username: str
+    credentials: Optional[Dict] = None
+
+class BlueskyCredentials(BaseModel):
+    identifier: str
+    password: str
+
+# gerUserbyId
+@app.get("/users/{user_id}")
+async def get_user(user_id: str):
+    """
+    Retorna os dados de um usuário específico
+    """
+    from bson.objectid import ObjectId
+
+    try:
+        # Converter string para ObjectId
+        user_id_obj = ObjectId(user_id)
+        user = db.get_user(user_id_obj)
+
+        if not user:
+            raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+        # Converter ObjectId para string para serialização JSON
+        if '_id' in user:
+            user['_id'] = str(user['_id'])
+
+        return user
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# Rotas para dados do usuário
 @app.post("/submit-user-data")
 async def submit_user_data(user_data: UserData):
     # Aqui implementaremos a conexão com banco de dados
@@ -57,7 +113,6 @@ async def verify_identity(
     selfie_bytes = await selfie.read()
 
     # Validar o documento e a selfie
-    from document_validation import validate_documents
     validation_result = validate_documents(document_bytes, selfie_bytes)
 
     # Atualizar o status de verificação do usuário
@@ -65,3 +120,120 @@ async def verify_identity(
         db.update_user_data(user_id, {"identity_verified": True})
 
     return validation_result
+
+# Rota para obter todos os usuários (apenas para desenvolvimento)
+@app.get("/users")
+async def get_all_users():
+    """
+    Retorna todos os usuários registrados no banco de dados.
+    ATENÇÃO: Esta rota é apenas para desenvolvimento e deve ser removida em produção.
+    """
+    users = db.get_all_users()
+    return {
+        "total": len(users),
+        "users": users
+    }
+
+# Rotas para Bluesky
+@app.post("/users/{user_id}/bluesky")
+async def link_bluesky_account(user_id: str, credentials: BlueskyCredentials):
+    """Vincula uma conta BlueSky ao perfil do usuário"""
+    try:
+        # Verificar se o usuário existe
+        user = db.get_user_data(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+        # Remover o @ do início do identificador, se presente
+        identifier = credentials.identifier
+        if identifier.startswith('@'):
+            identifier = identifier[1:]
+
+        # Prosseguir com a vinculação
+        result = social_media.link_social_account(
+            user_id,
+            "bluesky",
+            identifier,
+            {"identifier": identifier, "password": credentials.password}
+        )
+
+        if result["status"] == "error":
+            raise HTTPException(status_code=400, detail=result["message"])
+
+        # Atualizar o perfil do usuário no banco de dados
+        db.update_user_social_account(user_id, {
+            "platform": "bluesky",
+            "username": identifier,
+            **result["profile_data"]
+        })
+
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/users/{user_id}/bluesky/update")
+async def update_bluesky_account(user_id: str):
+    """Atualiza os dados da conta BlueSky vinculada"""
+    try:
+        # Verificar se o usuário existe
+        user = db.get_user_data(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+        # Encontrar a conta do Bluesky vinculada
+        bluesky_account = None
+        for account in user.get("social_accounts", []):
+            if account.get("platform") == "bluesky":
+                bluesky_account = account
+                break
+
+        if not bluesky_account:
+            raise HTTPException(status_code=404, detail="Conta BlueSky não encontrada")
+
+        # Atualizar dados da conta
+        result = social_media.update_bluesky_data(
+            user_id,
+            bluesky_account.get("did"),
+            bluesky_account.get("access_jwt"),
+            bluesky_account.get("refresh_jwt")
+        )
+
+        if result["status"] == "error":
+            raise HTTPException(status_code=400, detail=result["message"])
+
+        # Atualizar o perfil do usuário no banco de dados
+        db.update_user_social_account(user_id, {
+            "platform": "bluesky",
+            "username": bluesky_account.get("username"),
+            **result["data"]
+        })
+
+        return {"status": "success", "message": "Dados da conta BlueSky atualizados com sucesso"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.delete("/users/{user_id}/social-accounts/{platform}")
+async def unlink_social_account(user_id: str, platform: str):
+    """Remove a vinculação de uma conta de rede social"""
+    if platform != "bluesky":
+        raise HTTPException(status_code=400, detail="Plataforma não suportada. Apenas Bluesky está disponível.")
+
+    result = db.remove_user_social_account(user_id, platform)
+    if not result:
+        raise HTTPException(status_code=404, detail="Conta não encontrada")
+
+    return {"status": "success", "message": f"Conta {platform} desvinculada com sucesso"}
+
+@app.get("/users/{user_id}/esports-activity")
+async def get_esports_activity(user_id: str):
+    """Obtém um resumo das atividades relacionadas a esports do usuário"""
+    user = db.get_user(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+    linked_accounts = user.get("social_accounts", [])
+    if not linked_accounts:
+        return {"message": "Nenhuma conta de rede social vinculada"}
+
+    activity = social_media.get_user_esports_activity(user_id, linked_accounts)
+    return activity
