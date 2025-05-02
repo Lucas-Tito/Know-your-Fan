@@ -8,6 +8,9 @@ from esports_profile_validation import EsportsProfileValidator
 from social_media_integration import SocialMediaIntegration
 import os
 from dotenv import load_dotenv
+from pydantic import BaseModel, HttpUrl
+from typing import List, Optional, Dict
+from datetime import datetime
 
 # Carregar variáveis do arquivo .env
 load_dotenv()
@@ -237,3 +240,102 @@ async def get_esports_activity(user_id: str):
 
     activity = social_media.get_user_esports_activity(user_id, linked_accounts)
     return activity
+
+
+# Modelo de dados para perfil de e-sports
+class EsportsProfileLink(BaseModel):
+    profile_url: HttpUrl
+    notes: Optional[str] = None
+
+# Rota para adicionar perfil de e-sports
+@app.post("/users/{user_id}/esports-profiles")
+async def add_esports_profile(user_id: str, profile: EsportsProfileLink):
+    """
+    Adiciona e valida um perfil de e-sports para o usuário
+    """
+    try:
+        # Verificar se o usuário existe
+        user = db.get_user_data(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+        # Validar o perfil
+        validation_result = esports_validator.validate_profile_url(str(profile.profile_url))
+
+        if not validation_result.get("valid", False):
+            return {
+                "valid": False,
+                "error": validation_result.get("error", "Perfil inválido")
+            }
+
+        # Analisar relevância do perfil para o usuário
+        user_interests = user.get("interests", [])
+        relevance_analysis = esports_validator.analyze_profile_relevance(validation_result, user_interests)
+
+        # Preparar dados do perfil para salvar
+        profile_data = {
+            "profile_url": str(profile.profile_url),
+            "platform": validation_result.get("platform"),
+            "username": validation_result.get("nickname") or validation_result.get("username"),
+            "validated_at": datetime.now().isoformat(),
+            "validation_data": validation_result,
+            "relevance": relevance_analysis,
+            "notes": profile.notes
+        }
+
+        # Salvar o perfil no banco de dados
+        if "esports_profiles" not in user:
+            db.update_user_data(user_id, {"esports_profiles": []})
+
+        # Verificar se o perfil já existe
+        existing_profiles = user.get("esports_profiles", [])
+        for i, existing_profile in enumerate(existing_profiles):
+            if existing_profile.get("profile_url") == str(profile.profile_url):
+                # Atualizar perfil existente
+                existing_profiles[i] = profile_data
+                db.update_user_data(user_id, {"esports_profiles": existing_profiles})
+                return {
+                    "valid": True,
+                    "profile_data": validation_result,
+                    "relevance": relevance_analysis,
+                    "message": "Perfil de e-sports atualizado com sucesso"
+                }
+
+        # Adicionar novo perfil
+        db.update_user_data(user_id, {"$push": {"esports_profiles": profile_data}})
+
+        return {
+            "valid": True,
+            "profile_data": validation_result,
+            "relevance": relevance_analysis,
+            "message": "Perfil de e-sports adicionado com sucesso"
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# Rota para listar perfis de e-sports
+@app.get("/users/{user_id}/esports-profiles")
+async def get_user_esports_profiles(user_id: str):
+    """
+    Retorna todos os perfis de e-sports do usuário
+    """
+    user = db.get_user_data(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+    return user.get("esports_profiles", [])
+
+# Rota para validar perfil sem associar a um usuário
+@app.post("/validate-esports-profile")
+async def validate_esports_profile(profile: EsportsProfileLink):
+    """
+    Valida um perfil de e-sports sem associá-lo a um usuário
+    """
+    validation_result = esports_validator.validate_profile_url(str(profile.profile_url))
+
+    return {
+        "valid": validation_result.get("valid", False),
+        "profile_data": validation_result if validation_result.get("valid", False) else None,
+        "error": validation_result.get("error") if not validation_result.get("valid", False) else None
+    }
