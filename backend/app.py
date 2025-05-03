@@ -18,6 +18,7 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
 from typing import Optional
+from bson.objectid import ObjectId
 
 # Carregar variáveis do arquivo .env
 load_dotenv()
@@ -345,7 +346,7 @@ async def add_esports_profile(user_id: str, profile: EsportsProfileLink):
 
         # Analisar relevância do perfil para o usuário
         user_interests = user.get("interests", [])
-        relevance_analysis = esports_validator.analyze_profile_relevance(validation_result, user_interests)
+        relevance_analysis = await esports_validator.analyze_profile_relevance(validation_result, user_interests)
 
         # Preparar dados do perfil para salvar
         profile_data = {
@@ -377,7 +378,10 @@ async def add_esports_profile(user_id: str, profile: EsportsProfileLink):
                 }
 
         # Adicionar novo perfil
-        db.update_user_data(user_id, {"$push": {"esports_profiles": profile_data}})
+        db.db.users.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$push": {"esports_profiles": profile_data}}
+        )
 
         return {
             "valid": True,
