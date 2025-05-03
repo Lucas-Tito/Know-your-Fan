@@ -3,6 +3,8 @@ import { useAuth } from '../auth/AuthProvider';
 import { validateEsportsProfile, addEsportsProfile, getUserEsportsProfiles } from '../../services/validationAPI';
 
 const EsportsProfile = () => {
+  console.log("EsportsProfile - Componente renderizado"); 
+
   const { user } = useAuth();
   const [profileUrl, setProfileUrl] = useState('');
   const [notes, setNotes] = useState('');
@@ -15,15 +17,21 @@ const EsportsProfile = () => {
 
   // Carregar perfis existentes do usuário
   useEffect(() => {
-    if (user && user.id) {
+    console.log("EsportsProfile - Usuário recebido do AuthProvider:", user); // Log para depuração
+    if (user && user._id) {
+      console.log("EsportsProfile - ID do usuário encontrado:", user._id); // Log para depuração
       fetchUserProfiles();
+    } else {
+      console.warn("EsportsProfile - ID do usuário está undefined ou user é null."); // Log para depuração
     }
   }, [user]);
 
   const fetchUserProfiles = async () => {
     try {
+      console.log("EsportsProfile - Buscando perfis para o ID do usuário:", user._id); // Log para depuração
       setFetchingProfiles(true);
-      const profiles = await getUserEsportsProfiles(user.id);
+      const profiles = await getUserEsportsProfiles(user._id);
+      console.log("EsportsProfile - Perfis carregados:", profiles); // Log para depuração
       setUserProfiles(profiles);
     } catch (err) {
       console.error('Error fetching user profiles:', err);
@@ -47,7 +55,7 @@ const EsportsProfile = () => {
 
     try {
       // Primeiro validamos o perfil
-      const validation = await validateEsportsProfile(profileUrl, user.id);
+      const validation = await validateEsportsProfile(profileUrl, user._id);
       setValidationResult(validation);
 
       if (validation.valid) {
@@ -57,7 +65,7 @@ const EsportsProfile = () => {
           notes: notes
         };
 
-        const result = await addEsportsProfile(user.id, profileData);
+        const result = await addEsportsProfile(user._id, profileData);
         if (result.valid) {
           setSuccessMessage('Perfil adicionado com sucesso!');
           setProfileUrl('');

@@ -23,8 +23,10 @@ export function AuthProvider({ children }) {
       });
       if (!res.ok) throw new Error("Token inválido");
       const data = await res.json();
+      console.log("Perfil do usuário carregado:", data); // Log para depuração
       setUser(data);
     } catch {
+      console.error("Erro ao carregar perfil do usuário:", error);
       logout();
     }
   };
