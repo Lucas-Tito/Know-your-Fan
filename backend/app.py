@@ -13,6 +13,7 @@ from typing import List, Optional, Dict
 from datetime import datetime
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi import Depends
+from fastapi import Form
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
@@ -50,6 +51,7 @@ class UserData(BaseModel):
     teams: List[str]
     events: str
     purchases: str
+    password: str
 
 class SocialAccount(BaseModel):
     platform: str
@@ -59,6 +61,10 @@ class SocialAccount(BaseModel):
 class BlueskyCredentials(BaseModel):
     identifier: str
     password: str
+
+class LoginForm(BaseModel):
+    email: str
+    password: str    
 
 
 # Configurações para JWT
@@ -91,8 +97,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 @app.post("/login")
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(form_data.username, form_data.password)
+async def login(email: str = Form(...), password: str = Form(...)):
+    user = authenticate_user(email, password)
     if not user:
         raise HTTPException(status_code=401, detail="Usuário ou senha incorretos")
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -144,6 +150,12 @@ async def get_user(user_id: str):
 # Rotas para dados do usuário
 @app.post("/submit-user-data")
 async def submit_user_data(user_data: UserData):
+    # Hash da senha antes de salvar
+    hashed_password = get_password_hash(user_data.password)
+    user_data_dict = user_data.dict()
+    user_data_dict["hashed_password"] = hashed_password
+    del user_data_dict["password"]  # Remover o campo de senha em texto puro
+    
     # Aqui implementaremos a conexão com banco de dados
     result = db.save_user_data(user_data.dict())
     return {"status": "success", "data": user_data, "id": str(result.inserted_id)}
