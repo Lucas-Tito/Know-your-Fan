@@ -1,11 +1,23 @@
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from bson.json_util import dumps, loads
+from passlib.context import CryptContext
 
 class Database:
     def __init__(self):
         self.client = MongoClient('mongodb://mongodb:27017/')
         self.db = self.client['furia_fans']
+
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+    def get_user_by_email(self, email):
+        return self.db.users.find_one({"email": email})
+
+    # Para criar usuário com senha hasheada (exemplo)
+    def create_user(self, user_data):
+        user_data["hashed_password"] = pwd_context.hash(user_data["password"])
+        del user_data["password"]
+        return self.db.users.insert_one(user_data)
 
     def save_user_data(self, user_data):
         return self.db.users.insert_one(user_data)

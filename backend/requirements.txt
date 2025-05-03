@@ -12,3 +12,5 @@ requests
 beautifulsoup4
 openrouter>=1.0.0
 aiohttp>=3.9.0  # Para chamadas assíncronas
+passlib[bcrypt]
+python-jose[cryptography]
