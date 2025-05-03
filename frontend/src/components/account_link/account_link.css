@@ -1,0 +1,7 @@
+.account-link-root {
+    display: flex;
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    height: 100vh; /* Faz a div ocupar a altura total da tela */
+    gap: 10px;
+}
