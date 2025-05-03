@@ -1,6 +1,23 @@
 services:
+  frontend:
+      build:
+        context: ./frontend
+        dockerfile: Dockerfile
+      ports:
+        - "80:80"
+      depends_on:
+        - app
+      environment:
+        - VITE_API_URL=http://app:8000
+      volumes:
+        - ./frontend:/app  # Apenas para desenvolvimento
+        - /app/node_modules  # Isola as dependências
+      networks:
+        - backend-network
   app:
     build: ./backend
+    networks:
+      - backend-network
     ports:
       - "8000:8000"
     depends_on:
@@ -27,3 +44,7 @@ services:
 volumes:
   mongodb_data:
   pip-cache:  # Novo volume para cache de pip
+
+networks:
+  backend-network:
+    driver: bridge
