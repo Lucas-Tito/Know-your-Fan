@@ -10,6 +10,7 @@ import DocumentUpload from './features/validation/DocumentUpload';
 import EsportsProfile from './features/validation/EsportsProfile';
 import BlueskyConnect from './features/social/BlueskyConnect';
 import SocialMediaIntegration from './features/social/SocialMediaIntegration';
+import Header from './components/header/Header';
 
 const Dashboard = () => {
   const tabs = [
@@ -94,7 +95,7 @@ function App() {
             path="/dashboard/*" 
             element={
               <PrivateRoute>
-                <Dashboard />
+                <Header/>
               </PrivateRoute>
             } 
           />

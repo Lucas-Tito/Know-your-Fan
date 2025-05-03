@@ -1,3 +1,41 @@
+/* Contêiner principal para layout lado a lado */
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center; /* Centraliza verticalmente */
+  justify-content: center; /* Centraliza horizontalmente */
+  gap: 2rem;
+  max-width: 900px;
+  height: 100vh; /* Faz o contêiner ocupar a altura total da tela */
+  margin: 0 auto;
+  padding: 2rem;
+  box-sizing: border-box; /* Garante que padding não afete o tamanho total */
+}
+
+/* Estilo para a imagem */
+.image-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-container img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Estilo para o formulário */
+.form-container {
+  flex: 1;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 /* Estilo geral do formulário */
 form {
     display: flex;
