@@ -10,7 +10,6 @@ services:
       environment:
         - VITE_API_URL=http://app:8000
       volumes:
-        - ./frontend:/app  # Apenas para desenvolvimento
         - /app/node_modules  # Isola as dependências
       networks:
         - backend-network
