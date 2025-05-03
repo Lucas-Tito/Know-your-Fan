@@ -12,13 +12,13 @@ import DocumentUpload from '../../features/validation/DocumentUpload';
 import EsportsProfile from '../../features/validation/EsportsProfile';
 import BlueskyConnect from '../../features/social/BlueskyConnect';
 import SocialMediaIntegration from '../../features/social/SocialMediaIntegration';
+import AccountLink from "../account_link/AccountLink";
 
 
 export default function Header() {
 
     const tabs = [
-        { name: "Perfil", path: "profile" },
-        { name: "Documentos", path: "documents" },
+        { name: "Associar Contas", path: "profile" },
         { name: "E-sports", path: "esports" },
         { name: "Redes Sociais", path: "social" },
         { name: "Bluesky", path: "bluesky" }
@@ -64,6 +64,7 @@ export default function Header() {
                                 </Link>
                             </li>
                         ))}
+                        <LogoutButton />
                     </ul>
                 </nav>
             </header>
@@ -80,23 +81,18 @@ export default function Header() {
 
             <main className="py-6 px-4">
                 <Routes>
-                    <Route path="profile" element={<UserProfile />} />
-                    <Route path="documents" element={<DocumentUpload />} />
+                    <Route path="profile" element={<AccountLink />} />
                     <Route path="esports" element={<EsportsProfile />} />
                     <Route path="social" element={<SocialMediaIntegration />} />
                     <Route path="bluesky" element={<BlueskyConnect />} />
                     <Route path="*" element={<Navigate to="profile" replace />} />
                 </Routes>
             </main>
-            <LogoutButton />
         </>
 
     )
 }
 
-const UserProfile = () => {
-    return <div>Perfil do Usuário (implemente aqui)</div>;
-  };
 
 const LogoutButton = () => {
   const { logout } = useContext(AuthContext);

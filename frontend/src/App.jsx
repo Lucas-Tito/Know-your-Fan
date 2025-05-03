@@ -11,6 +11,7 @@ import EsportsProfile from './features/validation/EsportsProfile';
 import BlueskyConnect from './features/social/BlueskyConnect';
 import SocialMediaIntegration from './features/social/SocialMediaIntegration';
 import Header from './components/header/Header';
+import AccountLink from './components/account_link/AccountLink';
 
 const Dashboard = () => {
   const tabs = [
@@ -49,7 +50,7 @@ const Dashboard = () => {
 
       <main className="py-6 px-4">
         <Routes>
-          <Route path="profile" element={<UserProfile />} />
+          <Route path="profile" element={<AccountLink/>} />
           <Route path="documents" element={<DocumentUpload />} />
           <Route path="esports" element={<EsportsProfile />} />
           <Route path="social" element={<SocialMediaIntegration />} />
@@ -80,10 +81,7 @@ const LogoutButton = () => {
   );
 };
 
-// Você precisa definir UserProfile ou importar se já existir
-const UserProfile = () => {
-  return <div>Perfil do Usuário (implemente aqui)</div>;
-};
+
 
 function App() {
   return (

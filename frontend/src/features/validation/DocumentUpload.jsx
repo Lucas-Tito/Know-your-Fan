@@ -28,7 +28,7 @@ const DocumentUpload = () => {
     formData.append('user_id', user.id);
 
     try {
-      const response = await fetch('/validate-rg', {
+      const response = await fetch('/api/validate-rg', {
         method: 'POST',
         body: formData,
       });
@@ -94,12 +94,11 @@ const DocumentUpload = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-8 text-center">Validação de Documentos</h2>
       
       <div className="grid md:grid-cols-2 gap-6">
         {/* RG Validation */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold mb-4">Validação de RG</h3>
+          <h3 className="text-xl font-semibold mb-4">Validação de Documento</h3>
           <form onSubmit={validateRG}>
             <div className="mb-4">
               <label className="block text-gray-700 mb-2">Upload do RG</label>
@@ -125,56 +124,6 @@ const DocumentUpload = () => {
                 <p className="font-medium">{rgResult.valid ? 'RG Validado com Sucesso!' : 'Validação Falhou'}</p>
                 {rgResult.valid && rgResult.rg_number && (
                   <p className="text-sm mt-1">Número do RG: {rgResult.rg_number}</p>
-                )}
-              </div>
-            )}
-          </form>
-        </div>
-        
-        {/* Identity Verification */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold mb-4">Verificação de Identidade</h3>
-          <form onSubmit={verifyIdentity}>
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2">Documento com Foto</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange(setIdentityDocument)}
-                className="w-full p-2 border rounded"
-              />
-            </div>
-            
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2">Selfie</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange(setSelfie)}
-                className="w-full p-2 border rounded"
-              />
-              {errors.identity && <p className="text-red-500 text-sm mt-1">{errors.identity}</p>}
-            </div>
-            
-            <button
-              type="submit"
-              disabled={identityLoading}
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200"
-            >
-              {identityLoading ? 'Verificando...' : 'Verificar Identidade'}
-            </button>
-            
-            {identityResult && (
-              <div className={`mt-4 p-4 rounded ${identityResult.face_match ? 'bg-green-100' : 'bg-red-100'}`}>
-                <p className="font-medium">
-                  {identityResult.face_match 
-                    ? 'Identidade Verificada com Sucesso!' 
-                    : 'Verificação Falhou'}
-                </p>
-                {identityResult.face_match && (
-                  <p className="text-sm mt-1">
-                    Similaridade: {Math.round(identityResult.similarity)}%
-                  </p>
                 )}
               </div>
             )}
