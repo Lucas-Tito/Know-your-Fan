@@ -36,26 +36,8 @@ const LoginForm = () => {
 
     try {
       if (isLogin) {
-        // Enviar login para backend
-        const formBody = new URLSearchParams();
-        formBody.append("username", formData.email);
-        formBody.append("password", formData.password);
-      
-        const response = await fetch("http://localhost:8000/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: formBody.toString(),
-        });
-      
-        const data = await response.json();
-      
-        if (response.ok) {
-          login(data.access_token); // Ajuste seu contexto para aceitar token
-        } else {
-          setError("Falha ao fazer login. Por favor, tente novamente.");
-        }
+          // Chamar o método login do contexto
+          await login(formData.email, formData.password);
       } else {
         // Lógica para cadastro
         const response = await fetch('/submit-user-data', {

@@ -31,7 +31,7 @@ export function AuthProvider({ children }) {
 
   const login = async (username, password) => {
     const formData = new URLSearchParams();
-    formData.append("username", username);
+    formData.append("email", username);
     formData.append("password", password);
 
     const res = await fetch("http://localhost:8000/login", {
