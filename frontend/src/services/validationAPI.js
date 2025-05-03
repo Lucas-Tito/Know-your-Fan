@@ -78,8 +78,8 @@ export const addEsportsProfile = async (userId, profileData) => {
 export const validateEsportsProfile = async (profileUrl, userId = null) => {
   try {
     const url = userId 
-      ? `/validate-esports-profile?user_id=${userId}`
-      : '/validate-esports-profile';
+      ? `/api/validate-esports-profile?user_id=${userId}`
+      : '/api/validate-esports-profile';
       
     const response = await fetch(url, {
       method: 'POST',
