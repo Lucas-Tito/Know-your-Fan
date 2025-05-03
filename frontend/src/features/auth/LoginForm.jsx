@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useAuth } from './AuthProvider';
 import './login-form.css';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
+  const navigate = useNavigate(); // Adicione o hook useNavigate
   const [isLogin, setIsLogin] = useState(true); // Estado para alternar entre login e cadastro
   const [formData, setFormData] = useState({
     name: '',
@@ -38,6 +40,7 @@ const LoginForm = () => {
       if (isLogin) {
           // Chamar o método login do contexto
           await login(formData.email, formData.password);
+          navigate('/dashboard'); // Redirecionar para o dashboard após login bem-sucedido
       } else {
         // Lógica para cadastro
         const response = await fetch('/submit-user-data', {
