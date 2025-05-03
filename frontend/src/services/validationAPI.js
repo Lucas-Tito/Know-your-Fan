@@ -9,7 +9,7 @@ export const validateRG = async (userId, documentFile) => {
     formData.append('rg_document', documentFile);
     formData.append('user_id', userId);
 
-    const response = await fetch('/validate-rg', {
+    const response = await fetch('/api/validate-rg', {
       method: 'POST',
       body: formData,
     });
@@ -34,7 +34,7 @@ export const verifyIdentity = async (userId, documentFile, selfieFile) => {
     formData.append('selfie', selfieFile);
     formData.append('user_id', userId);
 
-    const response = await fetch('/verify-identity', {
+    const response = await fetch('/api/verify-identity', {
       method: 'POST',
       body: formData,
     });
@@ -54,7 +54,7 @@ export const verifyIdentity = async (userId, documentFile, selfieFile) => {
 // Função para adicionar perfil de e-sports
 export const addEsportsProfile = async (userId, profileData) => {
   try {
-    const response = await fetch(`/users/${userId}/esports-profiles`, {
+    const response = await fetch(`/api/users/${userId}/esports-profiles`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ export const validateEsportsProfile = async (profileUrl, userId = null) => {
 // Função para obter perfis de e-sports do usuário
 export const getUserEsportsProfiles = async (userId) => {
   try {
-    const response = await fetch(`/users/${userId}/esports-profiles`);
+    const response = await fetch(`/api/users/${userId}/esports-profiles`);
 
     if (!response.ok) {
       const errorData = await response.json();
