@@ -32,7 +32,7 @@ const LoginForm = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: (name === "interests" || name === "teams") ? value.split(',').map(s => s.trim()) : value
     });
   };
 
