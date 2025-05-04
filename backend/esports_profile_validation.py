@@ -15,8 +15,8 @@ class EsportsProfileValidator:
         self.openrouter_url = "https://openrouter.ai/api/v1/chat/completions"
 
         self.esports_keywords = [
-            "csgo", "counter-strike", "valorant", "overwatch", "fortnite",
-            "pubg", "apex legends", "rainbow six", "league of legends", "dota"
+            "csgo", "counter-strike", "overwatch",
+            "pubg", "apex legends", "rainbow six", "dota"
         ]
 
     async def validate_with_ai(self, profile_data: dict, user_interests: List[str]) -> dict:
@@ -32,7 +32,7 @@ class EsportsProfileValidator:
 
         User Interests: {', '.join(user_interests)}
 
-        Respond in JSON format with:
+        Respond in JSON format with (the response must be in brazilian portuguese):
         {{
             "relevant": boolean,
             "confidence": float (0-1),
