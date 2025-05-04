@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
 
   const fetchUserProfile = async (token) => {
     try {
-      const res = await fetch("http://localhost:8000/me", {
+      const res = await fetch("/api/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -36,7 +36,7 @@ export function AuthProvider({ children }) {
     formData.append("email", username);
     formData.append("password", password);
 
-    const res = await fetch("http://localhost:8000/login", {
+    const res = await fetch("/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -53,6 +53,24 @@ export function AuthProvider({ children }) {
     localStorage.setItem("token", data.access_token);
   };
 
+  const register = async (userData) => {
+
+    console.log(JSON.stringify(userData));
+    
+
+    const res = await fetch("/api/submit-user-data", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!res.ok) {
+      throw new Error("Cadastro falhou");
+    }
+  };
+
   const logout = () => {
     setToken(null);
     setUser(null);
@@ -60,7 +78,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ token, user, login, logout }}>
+    <AuthContext.Provider value={{ token, user, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -20,12 +20,13 @@ const LoginForm = () => {
     interests: [],
     teams: [],
     events: '',
-    purchases: ''
+    purchases: '',
+    password: ''
   });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { login } = useAuth();
+  const { login, register } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,22 +47,7 @@ const LoginForm = () => {
         await login(formData.email, formData.password);
         navigate('/dashboard'); // Redirecionar para o dashboard após login bem-sucedido
       } else {
-        // Lógica para cadastro
-        const response = await fetch('/submit-user-data', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData)
-        });
-
-        const data = await response.json();
-
-        if (data.status === 'success') {
-          login({ ...formData, id: data.id });
-        } else {
-          setError('Falha ao registrar usuário. Por favor, tente novamente.');
-        }
+        await register(formData);
       }
     } catch (err) {
       setError('Erro ao conectar ao servidor. Por favor, tente novamente mais tarde.');
@@ -300,7 +286,31 @@ const LoginForm = () => {
               {currentSection === 4 && (
                 <>
 
-                  <DocumentUpload/>
+                  <DocumentUpload />
+
+                  <div className="mb-4">
+                    <label className="block text-gray-700 mb-2">Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border rounded-lg"
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="block text-gray-700 mb-2">Senha</label>
+                    <input
+                      type="password"
+                      name="password"
+                      value={formData.password || ''}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border rounded-lg"
+                      required
+                    />
+                  </div>
 
                   <button
                     type="button"
