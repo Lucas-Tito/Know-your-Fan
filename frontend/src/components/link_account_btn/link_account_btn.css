@@ -1,0 +1,115 @@
+.dream-home-card {
+    position: relative;
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    padding: 40px 20px;
+    width: 300px;
+    text-align: center;
+    color: white;
+    font-family: sans-serif;
+    border: 1px solid #2a2a2a;
+    cursor: pointer;
+  }
+
+  .icon-image {
+    width: 50px; /* Define a largura máxima */
+    height: 50px; /* Define a altura máxima */
+    object-fit: contain; /* Garante que a imagem seja redimensionada proporcionalmente */
+    border-radius: 50%; /* Torna a imagem circular, se necessário */
+  }
+  
+  .external-link {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #666;
+    font-size: 20px;
+  }
+  
+  .icon-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .icon-circle {
+    border: 2px solid #7c3aed;
+    border-radius: 50%;
+    padding: 20px;
+    margin-bottom: 12px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    animation: pulse 2s infinite;
+  }
+  
+  .icon-shop {
+    font-size: 28px;
+    color: #c4b5fd;
+  }
+  
+  .label {
+    font-size: 16px;
+    font-weight: 500;
+  }
+  
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.5);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(124, 58, 237, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(124, 58, 237, 0);
+    }
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modal {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .modal input {
+    width: 100%;
+    padding: 0.5rem;
+    margin: 1rem 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  
+  .modal-actions button {
+    margin: 0 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .modal-actions button:first-child {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .modal-actions button:last-child {
+    background-color: #f44336;
+    color: white;
+  }
+  

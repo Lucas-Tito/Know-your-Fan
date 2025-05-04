@@ -1,3 +1,38 @@
+/* Contêiner principal para layout lado a lado */
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center; /* Centraliza verticalmente */
+  justify-content: center; /* Centraliza horizontalmente */
+  gap: 2rem;
+  max-width: 900px;
+  height: 100vh; /* Faz o contêiner ocupar a altura total da tela */
+  margin: 0 auto;
+  padding: 2rem;
+  box-sizing: border-box; /* Garante que padding não afete o tamanho total */
+}
+
+/* Estilo para a imagem */
+.image-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-container img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Estilo para o formulário */
+.form-container {
+  flex: 1;
+  background-color: #ffffff;
+  padding: 2rem;
+}
+
 /* Estilo geral do formulário */
 form {
     display: flex;
@@ -87,3 +122,29 @@ form {
     font-size: 0.75rem;
     color: #6b7280; /* Cinza */
   }
+
+  .toggle-container {
+    display: flex;
+    background-color: #f9f0e6; /* cor de fundo clara */
+    border-radius: 999px;
+    padding: 4px;
+    width: fit-content;
+    margin: 1rem auto;
+  }
+  
+  .toggle-button {
+    border: none;
+    background: none;
+    color: #a28e6a;
+    padding: 10px 24px;
+    border-radius: 999px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  
+  .toggle-button.active {
+    background-color: #a28e6a;
+    color: white;
+  }
+  
