@@ -2,10 +2,16 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 from bson.json_util import dumps, loads
 from passlib.context import CryptContext
+import os
 
 class Database:
+    
+
     def __init__(self):
-        self.client = MongoClient('mongodb://mongo:ctSyzkLtkVvxUvnfcxZiXxhnTiPUKcDi@mongodb.railway.internal:27017')
+        mongodb_uri = os.getenv("MONGO_URL")
+        if not mongodb_uri:
+            raise ValueError("MONGO_URL environment variable not set")
+        self.client = MongoClient(mongodb_uri)
         self.db = self.client['furia_fans']
 
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
