@@ -54,7 +54,7 @@ export function AuthProvider({ children }) {
   };
 
   const register = async (userData) => {
-    const res = await fetch("/api/submit-user-data", {
+    const res = await fetch("https://know-your-fan-production-c1f0.up.railway.app/submit-user-data", {
       method: "POST",
       headers: {
         "Content-Type": "application/json", // Alterado para application/json
