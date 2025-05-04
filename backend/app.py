@@ -67,6 +67,8 @@ class LoginForm(BaseModel):
     email: str
     password: str    
 
+class SteamProfile(BaseModel):
+    profile_url: str
 
 # Configurações para JWT
 SECRET_KEY = os.getenv('SECRET_KEY')  # Troque para uma chave segura
@@ -324,8 +326,8 @@ class EsportsProfileLink(BaseModel):
     notes: Optional[str] = None
 
 # Rota para adicionar perfil de e-sports
-@app.post("/users/{user_id}/esports-profiles")
-async def add_esports_profile(user_id: str, profile: EsportsProfileLink):
+@app.post("/users/{user_id}/validate_esports_profile_relevance")
+async def validate_profile(user_id: str, profile: EsportsProfileLink):
     """
     Adiciona e valida um perfil de e-sports para o usuário
     """
@@ -404,6 +406,16 @@ async def get_user_esports_profiles(user_id: str):
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
     return user.get("esports_profiles", [])
+
+@app.post("/users/{user_id}/esports-profiles")
+async def link_steam_profile(user_id: str, profile: SteamProfile):
+    updated = db.update_user_data(user_id, {
+        "profile_url": profile.profile_url,
+        "platform": "steam"  # Adiciona ou atualiza o campo "platform" com o valor "steam"
+    })
+    if not updated:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado ou erro ao atualizar")
+    return {"status": "success", "profile_url": profile.profile_url}
 
 # Rota para validar perfil sem associar a um usuário
 @app.post("/validate-esports-profile")
