@@ -24,6 +24,11 @@ const LoginForm = () => {
     password: ''
   });
 
+  fetch('https://know-your-fan-production-c1f0.up.railway.app/users')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Erro:', error));
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { login, register } = useAuth();
