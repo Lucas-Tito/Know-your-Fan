@@ -1,0 +1,73 @@
+.featured-section {
+    background-color: #000;
+    color: #fff;
+    padding: 2rem 1rem;
+    text-align: center;
+  }
+  
+  .featured-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .property-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  .property-card {
+    background-color: #1e1e1e;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: background 0.3s ease;
+  }
+  
+  .property-card:hover {
+    background-color: #2a2a2a;
+  }
+  
+  .property-card img {
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+  
+  .property-card-content {
+    text-align: left;
+  }
+  
+  .property-card h3 {
+    font-size: 1rem;
+    margin: 0;
+    margin-bottom: 0.25rem;
+    color: #fff;
+  }
+  
+  .property-footer {
+    font-size: 0.85rem;
+    color: #bbb;
+  }
+  
+  .btn-outline {
+    background: transparent;
+    border: 1px solid #fff;
+    padding: 0.5rem 1.2rem;
+    margin-top: 2rem;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+  }
+  
+  .btn-outline:hover {
+    background-color: #7c3aed;
+    border-color: #7c3aed;
+  }
+  
