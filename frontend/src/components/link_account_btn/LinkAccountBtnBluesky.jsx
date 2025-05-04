@@ -10,7 +10,7 @@ const LinkAccountBtnBluesky = ({ image, title, platform }) => {
   const { user } = useAuth();
 
   const handleSubmit = async () => {
-    const endpoint = `/api/users/${user._id}/bluesky`;
+    const endpoint = `https://know-your-fan-production-c1f0.up.railway.app/users/${user._id}/bluesky`;
 
     try {
       

@@ -28,7 +28,7 @@ const DocumentUpload = () => {
     // formData.append('user_id', user.id);
 
     try {
-      const response = await fetch('/api/validate-rg', {
+      const response = await fetch('https://know-your-fan-production-c1f0.up.railway.app/validate-rg', {
         method: 'POST',
         body: formData,
       });

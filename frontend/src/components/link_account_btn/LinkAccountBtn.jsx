@@ -9,7 +9,7 @@ const LinkAccountBtn = ({ image, title, platform }) => {
   const { user } = useAuth();
 
   const handleSubmit = async () => {
-    const endpoint = platform === 'bluesky' ? `/api/users/${user._id}/bluesky` : `/api/users/${user._id}/esports-profiles`;
+    const endpoint = platform === 'bluesky' ? `https://know-your-fan-production-c1f0.up.railway.app/users/${user._id}/bluesky` : `https://know-your-fan-production-c1f0.up.railway.app/users/${user._id}/esports-profiles`;
 
     try {
       const res = await fetch(endpoint, {

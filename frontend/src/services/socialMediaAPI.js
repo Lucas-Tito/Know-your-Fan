@@ -5,7 +5,7 @@
 // Função para vincular conta BlueSky
 export const linkBlueskyAccount = async (userId, credentials) => {
   try {
-    const response = await fetch(`/api/users/${userId}/bluesky`, {
+    const response = await fetch(`https://know-your-fan-production-c1f0.up.railway.app/users/${userId}/bluesky`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ export const linkBlueskyAccount = async (userId, credentials) => {
 // Função para atualizar dados da conta BlueSky
 export const updateBlueskyAccount = async (userId) => {
   try {
-    const response = await fetch(`/api/users/${userId}/bluesky/update`, {
+    const response = await fetch(`https://know-your-fan-production-c1f0.up.railway.app/users/${userId}/bluesky/update`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export const updateBlueskyAccount = async (userId) => {
 // Função para desvincular conta de rede social
 export const unlinkSocialAccount = async (userId, platform) => {
   try {
-    const response = await fetch(`/api/users/${userId}/social-accounts/${platform}`, {
+    const response = await fetch(`https://know-your-fan-production-c1f0.up.railway.app/users/${userId}/social-accounts/${platform}`, {
       method: 'DELETE'
     });
 
@@ -69,7 +69,7 @@ export const unlinkSocialAccount = async (userId, platform) => {
 // Função para obter atividades de esports do usuário
 export const getEsportsActivity = async (userId) => {
   try {
-    const response = await fetch(`/api/users/${userId}/esports-activity`);
+    const response = await fetch(`https://know-your-fan-production-c1f0.up.railway.app/users/${userId}/esports-activity`);
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -86,7 +86,7 @@ export const getEsportsActivity = async (userId) => {
 // Função para obter dados do usuário
 export const getUserData = async (userId) => {
   try {
-    const response = await fetch(`/api/users/${userId}`);
+    const response = await fetch(`https://know-your-fan-production-c1f0.up.railway.app/users/${userId}`);
 
     if (!response.ok) {
       const errorData = await response.json();
