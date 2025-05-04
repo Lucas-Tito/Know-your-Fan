@@ -54,18 +54,14 @@ export function AuthProvider({ children }) {
   };
 
   const register = async (userData) => {
-
-    console.log(JSON.stringify(userData));
-    
-
     const res = await fetch("/api/submit-user-data", {
       method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/json", // Alterado para application/json
       },
       body: JSON.stringify(userData),
     });
-
+  
     if (!res.ok) {
       throw new Error("Cadastro falhou");
     }

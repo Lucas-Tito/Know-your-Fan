@@ -8,7 +8,7 @@ const formatTimePlayed = (seconds) => {
 
 const ProfileCard = ({ profileUrl, nickname, stats, profileAnalysis }) => {
 
-    console.log("APIII", profileAnalysis);
+    console.log("APIII", stats);
 
 
     const kills = stats?.basic_stats?.total_kills;

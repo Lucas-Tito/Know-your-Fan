@@ -79,7 +79,12 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+    print(f"Tentando verificar senha. Hash armazenado: {hashed_password}")
+    try:
+        return pwd_context.verify(plain_password, hashed_password)
+    except Exception as e:
+        print(f"Erro ao verificar senha: {e}")
+        return False
 
 def get_password_hash(password):
     return pwd_context.hash(password)
@@ -150,7 +155,6 @@ async def get_user(user_id: str):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-# Rotas para dados do usuário
 @app.post("/submit-user-data")
 async def submit_user_data(user_data: UserData):
     # Hash da senha antes de salvar
@@ -158,9 +162,9 @@ async def submit_user_data(user_data: UserData):
     user_data_dict = user_data.dict()
     user_data_dict["hashed_password"] = hashed_password
     del user_data_dict["password"]  # Remover o campo de senha em texto puro
-    
+
     # Aqui implementaremos a conexão com banco de dados
-    result = db.save_user_data(user_data.dict())
+    result = db.save_user_data(user_data_dict)  # <-- CORRIGIDO!
     return {"status": "success", "data": user_data, "id": str(result.inserted_id)}
 
 @app.post("/validate-rg")
