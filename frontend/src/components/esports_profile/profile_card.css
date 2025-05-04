@@ -1,0 +1,46 @@
+.card {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    max-width: 320px;
+    text-align: center;
+    font-family: 'Segoe UI', sans-serif;
+    transition: 0.3s ease;
+  }
+
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+  }
+  
+  .avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 2px solid #ddd;
+  }
+  
+  .nickname {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 1rem;
+    font-size: 0.95rem;
+    color: #555;
+  }
+  
+  .label {
+    font-weight: bold;
+    color: #111;
+  }
+  
