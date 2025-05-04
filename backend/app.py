@@ -401,11 +401,15 @@ async def get_user_esports_profiles(user_id: str):
     """
     Retorna todos os perfis de e-sports do usuário
     """
-    user = db.get_user_data(user_id)
-    if not user:
+    user_data = db.get_user_data(user_id)
+    if not user_data:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
-
-    return user.get("esports_profiles", [])
+    
+    profile_url = user_data.get("profile_url")
+    if not profile_url:
+        raise HTTPException(status_code=404, detail="Perfil Steam não vinculado")
+    
+    return {"profile_url": profile_url}
 
 @app.post("/users/{user_id}/esports-profiles")
 async def link_steam_profile(user_id: str, profile: SteamProfile):
