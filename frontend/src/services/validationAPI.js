@@ -78,7 +78,7 @@ export const addEsportsProfile = async (userId, profileData) => {
 export const validateEsportsProfile = async (profileUrl, userId = null) => {
   try {
     const url = userId 
-      ? `/api/validate-esports-profile?user_id=${userId}`
+      ? `/api/users/${userId}/validate_esports_profile_relevance`
       : '/api/validate-esports-profile';
       
     const response = await fetch(url, {
@@ -86,7 +86,7 @@ export const validateEsportsProfile = async (profileUrl, userId = null) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ profile_url: profileUrl })
+      body: JSON.stringify({ profile_url: profileUrl.profile_url , notes: "Perfil público de jogador"})
     });
 
     if (!response.ok) {

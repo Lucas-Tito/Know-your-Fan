@@ -7,21 +7,23 @@ const formatTimePlayed = (seconds) => {
 };
 
 const ProfileCard = ({ profileUrl, nickname, stats, profileAnalysis }) => {
-    const kills = stats?.cs2_stats?.basic_stats?.total_kills;
-    const deaths = stats?.cs2_stats?.basic_stats?.total_deaths;
-    const headshots = stats?.cs2_stats?.basic_stats?.total_kills_headshot;
+
+    console.log("APIII", profileAnalysis);
+    
+
+    const kills = stats?.basic_stats?.total_kills;
+    const deaths = stats?.basic_stats?.total_deaths;
+    const headshots = stats?.basic_stats?.total_kills_headshot;
     const kd = (kills / deaths).toFixed(2);
     const hsPercent = ((headshots / kills) * 100).toFixed(1);
-    const matchesPlayed = stats?.cs2_stats?.basic_stats?.total_matches_played;
-    const matchesWon = stats?.cs2_stats?.basic_stats?.total_matches_won;
+    const matchesPlayed = stats?.basic_stats?.total_matches_played;
+    const matchesWon = stats?.basic_stats?.total_matches_won;
     const winRate = ((matchesWon / matchesPlayed) * 100).toFixed(1);
-    const timePlayed = formatTimePlayed(stats?.cs2_stats?.basic_stats?.total_time_played);
+    const timePlayed = formatTimePlayed(stats?.basic_stats?.total_time_played);
 
-    const relevant = profileAnalysis?.relevance?.final_relevance;
-    const confidence = profileAnalysis?.relevance?.ai_analysis?.confidence;
-    const reason = profileAnalysis?.relevance?.ai_analysis?.reason;
-
-    console.log("oi"+relevant);
+    const relevant = profileAnalysis?.final_relevance;
+    const confidence = profileAnalysis?.ai_analysis?.confidence;
+    const reason = profileAnalysis?.ai_analysis?.reason;
     
     return (
         <div className="card">
@@ -31,8 +33,8 @@ const ProfileCard = ({ profileUrl, nickname, stats, profileAnalysis }) => {
                 <div className='profile-info-section'>
                     <h3>Relevância do Conteúdo</h3>
                     <div className="stats">
-                        <div><span className="label">Relevância:</span> {relevant.toString()}</div>
-                        <div><span className="label">Confiança:</span> {confidence.toString()}</div>
+                        <div><span className="label">Relevância:</span> {relevant?.toString()}</div>
+                        <div><span className="label">Confiança:</span> {confidence?.toString()}</div>
                         <div><span className="label">Motivo:</span> {reason}</div>
                     </div>
                 </div>

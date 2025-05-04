@@ -21,7 +21,6 @@ export default function Header() {
         { name: "Associar Contas", path: "profile" },
         { name: "E-sports", path: "esports" },
         { name: "Redes Sociais", path: "social" },
-        { name: "Bluesky", path: "bluesky" }
     ];
 
 
@@ -84,7 +83,6 @@ export default function Header() {
                     <Route path="profile" element={<AccountLink />} />
                     <Route path="esports" element={<EsportsProfile />} />
                     <Route path="social" element={<SocialMediaIntegration />} />
-                    <Route path="bluesky" element={<BlueskyConnect />} />
                     <Route path="*" element={<Navigate to="profile" replace />} />
                 </Routes>
             </main>

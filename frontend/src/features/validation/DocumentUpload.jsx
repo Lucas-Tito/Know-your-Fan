@@ -25,7 +25,7 @@ const DocumentUpload = () => {
 
     const formData = new FormData();
     formData.append('rg_document', rgDocument);
-    formData.append('user_id', user.id);
+    // formData.append('user_id', user.id);
 
     try {
       const response = await fetch('/api/validate-rg', {
@@ -47,45 +47,6 @@ const DocumentUpload = () => {
     }
   };
 
-  const verifyIdentity = async (e) => {
-    e.preventDefault();
-    setIdentityLoading(true);
-    setErrors({});
-
-    if (!identityDocument || !selfie) {
-      setErrors(prev => ({ 
-        ...prev, 
-        identity: !identityDocument ? 'Selecione um documento' : 'Selecione uma selfie' 
-      }));
-      setIdentityLoading(false);
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('document', identityDocument);
-    formData.append('selfie', selfie);
-    formData.append('user_id', user.id);
-
-    try {
-      const response = await fetch('/verify-identity', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const result = await response.json();
-      setIdentityResult(result);
-      
-      if (!result.face_match) {
-        setErrors(prev => ({ ...prev, identity: 'Verificação falhou. Rosto não corresponde ao documento.' }));
-      }
-    } catch (error) {
-      console.error('Error verifying identity:', error);
-      setErrors(prev => ({ ...prev, identity: 'Erro ao verificar identidade. Tente novamente.' }));
-    } finally {
-      setIdentityLoading(false);
-    }
-  };
-
   const handleFileChange = (setter) => (e) => {
     if (e.target.files && e.target.files[0]) {
       setter(e.target.files[0]);
@@ -99,7 +60,7 @@ const DocumentUpload = () => {
         {/* RG Validation */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h3 className="text-xl font-semibold mb-4">Validação de Documento</h3>
-          <form onSubmit={validateRG}>
+          <div>
             <div className="mb-4">
               <label className="block text-gray-700 mb-2">Upload do RG</label>
               <input
@@ -114,6 +75,7 @@ const DocumentUpload = () => {
             <button
               type="submit"
               disabled={rgLoading}
+              onClick={validateRG}
               className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200"
             >
               {rgLoading ? 'Validando...' : 'Validar RG'}
@@ -127,7 +89,7 @@ const DocumentUpload = () => {
                 )}
               </div>
             )}
-          </form>
+          </div>
         </div>
       </div>
     </div>

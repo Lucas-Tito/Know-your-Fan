@@ -166,7 +166,7 @@ async def submit_user_data(user_data: UserData):
 @app.post("/validate-rg")
 async def validate_rg_endpoint(
     rg_document: UploadFile = File(...),
-    user_id: str = Form(...)
+    # user_id: str = Form(...)
 ):
     # Ler o arquivo de imagem
     document_bytes = await rg_document.read()
@@ -174,12 +174,12 @@ async def validate_rg_endpoint(
     # Validar o RG
     validation_result = validate_rg(document_bytes)
 
-    # Se o RG for válido, atualizar o perfil do usuário
-    if validation_result["valid"]:
-        db.update_user_data(user_id, {
-            "rg_verified": True,
-            "rg_number": validation_result["rg_number"]
-        })
+    # # Se o RG for válido, atualizar o perfil do usuário
+    # if validation_result["valid"]:
+    #     db.update_user_data(user_id, {
+    #         "rg_verified": True,
+    #         "rg_number": validation_result["rg_number"]
+    #     })
 
     return validation_result
 

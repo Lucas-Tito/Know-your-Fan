@@ -3,13 +3,14 @@ import './link_account_btn.css';
 import { useAuth } from '../../features/auth/AuthProvider';
 
 
-const LinkAccountBtn = ({ image, title, platform }) => {
+const LinkAccountBtnBluesky = ({ image, title, platform }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [link, setLink] = useState('');
+  const [password, setPassword] = useState('');
   const { user } = useAuth();
 
   const handleSubmit = async () => {
-    const endpoint = platform === 'bluesky' ? `/api/users/${user._id}/bluesky` : `/api/users/${user._id}/esports-profiles`;
+    const endpoint = `/api/users/${user._id}/bluesky`;
 
     try {
       const res = await fetch(endpoint, {
@@ -17,7 +18,7 @@ const LinkAccountBtn = ({ image, title, platform }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({profile_url: link }),
+        body: JSON.stringify({identifier: link, password: password }),
       });
 
       if (!res.ok) {
@@ -52,7 +53,13 @@ const LinkAccountBtn = ({ image, title, platform }) => {
               type="text"
               value={link}
               onChange={(e) => setLink(e.target.value)}
-              placeholder="Cole o link aqui"
+              placeholder="Cole o handle sem @ aqui"
+            />
+            <input
+              type="text"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Cole a senha link aqui"
             />
             <div className="modal-actions">
               <button onClick={handleSubmit}>Enviar</button>
@@ -65,4 +72,4 @@ const LinkAccountBtn = ({ image, title, platform }) => {
   );
 };
 
-export default LinkAccountBtn;
+export default LinkAccountBtnBluesky;

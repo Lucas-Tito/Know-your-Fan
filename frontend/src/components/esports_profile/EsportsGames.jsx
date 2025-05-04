@@ -1,41 +1,19 @@
 import React from 'react';
 import './esports_games.css'; 
 
-const properties = [
-  {
-    title: 'cs2',
-    image: 'http://media.steampowered.com/steamcommunity/public/images/apps/100/077b050ef3e89cd84e2c5a575d78d53b54058236.jpg',
-    price: '128',
-  },
-  {
-    title: 'cs2',
-    image: 'http://media.steampowered.com/steamcommunity/public/images/apps/100/077b050ef3e89cd84e2c5a575d78d53b54058236.jpg',
-    price: '128',
-  },
-  {
-    title: 'cs2',
-    image: 'http://media.steampowered.com/steamcommunity/public/images/apps/100/077b050ef3e89cd84e2c5a575d78d53b54058236.jpg',
-    price: '128',
-  },
-  {
-    title: 'cs2',
-    image: 'http://media.steampowered.com/steamcommunity/public/images/apps/100/077b050ef3e89cd84e2c5a575d78d53b54058236.jpg',
-    price: '128',
-  },
-];
 
-export default function EsportsGames() {
+export default function EsportsGames({ games }) {
   return (
     <div className="featured-section">
       <h2>Jogos Competitivos de -USERNAME-</h2>
       <div className="property-grid">
-        {properties.map((prop, idx) => (
+        {games?.map((games, idx) => (
           <div className="property-card" key={idx}>
-            <img src={prop.image} alt={prop.title} />
+            <img src={games?.img_icon_url} alt={games?.name} />
             <div className="property-card-content">
-              <h3>{prop.title}</h3>
+              <h3>{games?.name}</h3>
               <div className="property-footer">
-                <strong>{prop.price}</strong>
+                <strong>{games?.playtime_hours}</strong>
               </div>
             </div>
           </div>

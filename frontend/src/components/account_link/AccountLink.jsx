@@ -3,6 +3,7 @@ import './account_link.css';
 import LinkAccountBtn from '../link_account_btn/LinkAccountBtn';
 import bluesky_logo from '../../assets/bluesky_logo.png'; // Caminho para a imagem local
 import steam_logo from '../../assets/steam_logo.png'; // Caminho para outra imagem local
+import LinkAccountBtnBluesky from '../link_account_btn/LinkAccountBtnBluesky';
 
 
 const AccountLink = () => {
@@ -13,7 +14,7 @@ const AccountLink = () => {
             title="Associar Conta Steam" 
             platform="steam"
         />
-        <LinkAccountBtn
+        <LinkAccountBtnBluesky
             image={bluesky_logo} 
             title="Associar Conta Bluesky" 
             platform="bluesky"
