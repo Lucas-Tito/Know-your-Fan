@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../auth/AuthProvider';
 import { validateEsportsProfile, addEsportsProfile, getUserEsportsProfiles } from '../../services/validationAPI';
+import EsportsGames from '../../components/esports_profile/EsportsGames';
+import ProfileCard from '../../components/esports_profile/ProfileCard';
+import cs2StatsMock from './cs2StatsMock';
+import profileAnalysisMock from './profileAnalysisMock';
 
 const EsportsProfile = () => {
   console.log("EsportsProfile - Componente renderizado"); 
@@ -274,6 +278,14 @@ const EsportsProfile = () => {
           </p>
         )}
       </div>
+
+      <ProfileCard
+        profileUrl="https://avatars.steamstatic.com/cbc9049654e4f66db4136d5e22c88c524da262ca_full.jpg"
+        nickname="TitoPrkt"
+        stats={cs2StatsMock}
+        profileAnalysis={profileAnalysisMock}
+      />
+      <EsportsGames/>
     </div>
   );
 };
