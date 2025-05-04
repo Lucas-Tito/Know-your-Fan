@@ -210,49 +210,30 @@ class SocialMediaIntegration:
 
     def get_user_esports_activity(self, user_id, linked_accounts):
         """
-        Obtém um resumo consolidado das atividades relacionadas a esports
-        de todas as contas vinculadas do usuário
+        Obtém os dados detalhados da conta Bluesky vinculada do usuário,
+        incluindo perfil e posts relacionados a esports, similar à função link_social_account.
         """
-        activity_summary = {
-            "following_orgs": [],
-            "interactions": {
-                "total": 0,
-                "by_platform": {}
-            },
-            "favorite_orgs": {},
-            "engagement_level": "low"  # low, medium, high
-        }
-
         for account in linked_accounts:
-            platform = account["platform"]
-            username = account.get("username")
-
-            if platform == "bluesky" and account.get("access_jwt") and account.get("did"):
-                # Para BlueSky, podemos usar a API completa com autenticação
+            if account.get("access_jwt") and account.get("did"):
+                # Obter dados completos do Bluesky com autenticação
                 data = self.get_bluesky_data(account["access_jwt"], account["did"])
                 if "error" not in data:
-                    # Contabilizar posts relacionados a esports
-                    interactions = data["esports_posts"]["count"]
-                    activity_summary["interactions"]["total"] += interactions
-                    activity_summary["interactions"]["by_platform"]["bluesky"] = interactions
-
-                    # Analisar organizações favoritas
-                    for post in data["esports_posts"]["sample"]:
-                        for org in self.esports_orgs:
-                            if org in post["text"].lower():
-                                activity_summary["favorite_orgs"][org] = activity_summary["favorite_orgs"].get(org, 0) + 1
-
-        # Determinar nível de engajamento
-        if activity_summary["interactions"]["total"] > 10:
-            activity_summary["engagement_level"] = "high"
-        elif activity_summary["interactions"]["total"] > 5:
-            activity_summary["engagement_level"] = "medium"
-
-        # Ordenar organizações favoritas
-        activity_summary["favorite_orgs"] = dict(
-            sorted(activity_summary["favorite_orgs"].items(),
-                  key=lambda item: item[1],
-                  reverse=True)
-        )
-
-        return activity_summary
+                    # Adicionar tokens e DID para manter compatibilidade
+                    data["access_jwt"] = account["access_jwt"]
+                    data["refresh_jwt"] = account.get("refresh_jwt", "")
+                    data["did"] = account["did"]
+                    return {
+                        "status": "success",
+                        "message": "success retrieving data",
+                        "profile_data": data
+                    }
+                else:
+                    return {
+                        "status": "error",
+                        "message": data["error"]
+                    }
+        # Caso não encontre conta Bluesky válida
+        return {
+            "status": "error",
+            "message": "Conta Bluesky não vinculada ou tokens inválidos"
+        }
