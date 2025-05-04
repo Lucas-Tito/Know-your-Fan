@@ -3,11 +3,17 @@
     color: #fff;
     padding: 2rem 1rem;
     text-align: center;
+    margin-top: 80px;
+  }
+
+  .reason{
+    color: #999999;
   }
   
   .featured-section h2 {
     font-size: 1.8rem;
     margin-bottom: 1.5rem;
+    color: white;
   }
   
   .property-grid {

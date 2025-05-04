@@ -12,18 +12,18 @@
   box-sizing: border-box; /* Garante que padding não afete o tamanho total */
 }
 
-/* Estilo para a imagem */
 .image-container {
   flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  align-items: stretch; /* <- permite que a imagem cresça em altura */
 }
 
+
 .image-container img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* ou 'contain', dependendo do que você quer */
+  display: block;
 }
 
 /* Estilo para o formulário */
@@ -125,7 +125,7 @@ form {
 
   .toggle-container {
     display: flex;
-    background-color: #f9f0e6; /* cor de fundo clara */
+    background-color: #1A1A1A; /* cor de fundo clara */
     border-radius: 999px;
     padding: 4px;
     width: fit-content;
@@ -135,7 +135,7 @@ form {
   .toggle-button {
     border: none;
     background: none;
-    color: #a28e6a;
+    color: white;
     padding: 10px 24px;
     border-radius: 999px;
     font-size: 1rem;
@@ -144,7 +144,7 @@ form {
   }
   
   .toggle-button.active {
-    background-color: #a28e6a;
+    background-color: #000000;
     color: white;
   }
   

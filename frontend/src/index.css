@@ -1,10 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Mulish:wght@200;400;600;800&family=Poppins:wght@200;400;800&display=swap');
+
 *{
-  margin: 0;
-  box-sizing: border-box;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Mulish', sans-serif;
+    scrollbar-color: #8e8e8e #fff;
+    scrollbar-width: thin;
 }
 
 #root{
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
+
+body{
+    background-color: #141414;
+}
+
+.primary_text{
+    font-family: 'Poppins', sans-serif;
+}
+
+.secondary_text{
+    font-family: 'Mulish', sans-serif;
+}
+
+/*
+*   Anchor links don't count the height of fixed headers,
+*   so the following css code compensate this 
+*/
+html {
+    scroll-padding-top: 220px; /* height of sticky header */
+}
+
+

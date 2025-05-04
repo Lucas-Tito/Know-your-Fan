@@ -78,6 +78,7 @@ const LoginForm = () => {
         <img
           src={loginArt}
           alt="E-sports Fan"
+          className='login_art'
         />
       </div>
 

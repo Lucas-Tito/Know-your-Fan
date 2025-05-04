@@ -4,6 +4,7 @@ import { getEsportsActivity, getUserData } from '../../services/socialMediaAPI';
 import BlueskyConnect from './BlueskyConnect';
 import BlueskyProfile from '../../components/social_account/BlueskyProfile';
 import profileDataMock from './profileDataMock';
+import "./social_media.css"
 
 const SocialMediaIntegration = () => {
   const { user } = useAuth();
@@ -30,10 +31,16 @@ const SocialMediaIntegration = () => {
 
 
   return (
-    <div>
-      <BlueskyProfile
-        profile_data={activityData}
-      />
+    <div className='social_media_root'>
+      {activityData ? (
+        <>
+          <BlueskyProfile
+            profile_data={activityData}
+          />
+        </>
+      ) : (
+        <p className='loading'>Carregando...</p> // opcional, para mostrar enquanto não tem dados
+      )}
     </div>
   );
 };

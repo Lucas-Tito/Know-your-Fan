@@ -45,15 +45,21 @@ const EsportsProfile = () => {
 
   return (
     <div className='esports_profile_root'>
-      <ProfileCard
-        profileUrl={profileValidation?.profile_data?.avatar}
-        nickname={profileValidation?.profile_data?.nickname}
-        stats={profileValidation?.profile_data?.cs2_stats}
-        profileAnalysis={profileValidation?.relevance}
-      />
-      <EsportsGames
-        games={profileValidation?.profile_data?.esports_games}
-      />
+      {profileValidation?.profile_data ? (
+        <>
+          <ProfileCard
+            profileUrl={profileValidation.profile_data.avatar}
+            nickname={profileValidation.profile_data.nickname}
+            stats={profileValidation.profile_data.cs2_stats}
+            profileAnalysis={profileValidation.relevance}
+          />
+          <EsportsGames
+            games={profileValidation.profile_data.esports_games}
+          />
+        </>
+      ) : (
+        <p className='loading'>Carregando...</p> // opcional, para mostrar enquanto não tem dados
+      )}
     </div>
   );
 };

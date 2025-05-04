@@ -13,6 +13,7 @@ const LinkAccountBtnBluesky = ({ image, title, platform }) => {
     const endpoint = `/api/users/${user._id}/bluesky`;
 
     try {
+      
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: {

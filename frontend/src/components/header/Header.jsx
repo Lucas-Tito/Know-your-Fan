@@ -3,7 +3,7 @@ import close_icon from "../../assets/close_icon.svg"
 import menu_icon from "../../assets/mobile_menu_icon.svg"
 import { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
-
+import furia_logo from "../../assets/furia_logo.png"
 import { AuthProvider, AuthContext } from '../../features/auth/AuthProvider';
 import PrivateRoute from '../../features/auth/PrivateRoute';
 import LoginForm from '../../features/auth/LoginForm';
@@ -16,7 +16,7 @@ import AccountLink from "../account_link/AccountLink";
 
 
 export default function Header() {
-
+    const navigate = useNavigate();
     const tabs = [
         { name: "Associar Contas", path: "profile" },
         { name: "E-sports", path: "esports" },
@@ -45,9 +45,7 @@ export default function Header() {
         <>
             {/* header represents a support tag that can work as a navigation section */}
             <header>
-                <span className="logo" alt="logo" onClick={console.log("logo")}>
-                    Lucas Tito
-                </span>
+                <img src={furia_logo} className="logo" alt="logo" onClick={() => navigate('/dashboard/profile')}/>
 
 
                 {/* nav is a section that contains links to others pages */}
@@ -58,6 +56,7 @@ export default function Header() {
                             <li key={tab.path}>
                                 <Link
                                     to={`/dashboard/${tab.path}`}
+                                    className="li"
                                 >
                                     {tab.name}
                                 </Link>
@@ -104,7 +103,7 @@ const LogoutButton = () => {
   return (
     <button
       onClick={handleLogout}
-      className="px-4 py-2 bg-red-600 rounded hover:bg-red-700 transition"
+      className="button"
     >
       Logout
     </button>

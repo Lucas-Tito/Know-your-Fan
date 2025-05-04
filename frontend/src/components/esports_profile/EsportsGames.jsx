@@ -5,7 +5,7 @@ import './esports_games.css';
 export default function EsportsGames({ games }) {
   return (
     <div className="featured-section">
-      <h2>Jogos Competitivos de -USERNAME-</h2>
+      <h2>Jogos Competitivos do Usuário</h2>
       <div className="property-grid">
         {games?.map((games, idx) => (
           <div className="property-card" key={idx}>
