@@ -14,12 +14,18 @@ Este projeto implementa uma solução completa para o desafio "Know Your Fan", p
 
 ### Tecnologias Utilizadas
 
-- Python 3.9+
-- FastAPI para API REST
-- MongoDB para armazenamento de dados
-- Docker e Docker Compose para containerização
-- AWS Rekognition para verificação de documentos e faces
-- Integração com APIs de redes sociais e plataformas de e-sports, incluindo BlueSky
+- Python 3.9+.
+- React.
+- FastAPI para API REST.
+- MongoDB para armazenamento de dados.
+- Docker e Docker Compose para containerização.
+- AWS IAM para verificação de documentos.
+- JWT Auth.
+- OpenRouter para integração com IA.
+
+## Acesse o deploy pelo link abaixo:
+
+https://know-your-fan-production.up.railway.app
 
 ### Instalação e Uso com Docker
 
