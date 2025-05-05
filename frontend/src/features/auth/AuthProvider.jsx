@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
 
   const fetchUserProfile = async (token) => {
     try {
-      const res = await fetch("/api/me", {
+      const res = await fetch("https://know-your-fan-production-c1f0.up.railway.app/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -36,7 +36,7 @@ export function AuthProvider({ children }) {
     formData.append("email", username);
     formData.append("password", password);
 
-    const res = await fetch("/api/login", {
+    const res = await fetch("https://know-your-fan-production-c1f0.up.railway.app/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
