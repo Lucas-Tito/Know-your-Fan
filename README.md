@@ -113,6 +113,5 @@ Este projeto utiliza o serviço AWS Rekognition para verificação de documentos
 - Detecta faces no documento
 - Extrai texto usando OCR
 - Valida o formato e conteúdo do RG
-- Compara a face do documento com a selfie do usuário
 
 O Free Tier da AWS permite aproximadamente 2.500 verificações de RG por mês sem custo adicional durante os primeiros 12 meses.
